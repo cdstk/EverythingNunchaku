@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "package": "everythingnunchaku.mixin",
+  "refmap": "mixins.everythingnunchaku.refmap.json",
+  "compatibilityLevel": "JAVA_8",
+  "target": "@env(DEFAULT)",
+  "minVersion": "0.8",
+  "mixinextras": {"minVersion": "0.5.0"},
+  "mixins": [
+
+  ],
+  "injectors": {
+    "maxShiftBy": 10
+  },
+  "client": [
+    "bettersurvival.ModClientHandler_Mixin"
+  ]
+}
