@@ -16,6 +16,7 @@ public class ForgeConfigProvider {
 
     private static final Set<Class<?>> validNunchakuClasses = new HashSet<>();
     private static final Set<ResourceLocation> validNunchakuItems = new HashSet<>();
+    private static final Set<ResourceLocation> invalidNunchakuItems = new HashSet<>();
 
     public static void init(){
         ForgeConfigProvider.initClientNunchakus();
@@ -23,6 +24,7 @@ public class ForgeConfigProvider {
 
     public static boolean isClientNunchaku(Item item){
         if(ForgeConfigHandler.client.allowEverything) return true;
+        if(invalidNunchakuItems.contains(item.getRegistryName())) return false;
         if(validNunchakuItems.contains(item.getRegistryName())) return true;
         for(Class<?> clazz : validNunchakuClasses) {
             if(clazz.isInstance(item)) return true;
@@ -34,6 +36,7 @@ public class ForgeConfigProvider {
     public static void initClientNunchakus(){
         ForgeConfigProvider.validNunchakuClasses.clear();
         ForgeConfigProvider.validNunchakuItems.clear();
+        ForgeConfigProvider.invalidNunchakuItems.clear();
         ForgeConfigProvider.validNunchakuClasses.addAll(Arrays.stream(ForgeConfigHandler.client.itemClassWhitelist)
                 .map(line -> {
                     try {
@@ -49,7 +52,17 @@ public class ForgeConfigProvider {
                 .map(ResourceLocation::new)
                 .filter(resourceLocation -> {
                     if(ForgeRegistries.ITEMS.getValue(resourceLocation) == null){
-                        EverythingNunchaku.LOGGER.log(Level.WARN, "Item ID not found for entry: {}, ignoring", resourceLocation);
+                        EverythingNunchaku.LOGGER.log(Level.WARN, "Whitelist Item ID not found for entry: {}, ignoring", resourceLocation);
+                        return false;
+                    }
+                    return true;
+                })
+                .collect(Collectors.toSet()));
+        ForgeConfigProvider.invalidNunchakuItems.addAll(Arrays.stream(ForgeConfigHandler.client.itemIDBlacklist)
+                .map(ResourceLocation::new)
+                .filter(resourceLocation -> {
+                    if(ForgeRegistries.ITEMS.getValue(resourceLocation) == null){
+                        EverythingNunchaku.LOGGER.log(Level.WARN, "Blacklist Item ID not found for entry: {}, ignoring", resourceLocation);
                         return false;
                     }
                     return true;

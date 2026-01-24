@@ -13,6 +13,7 @@
     "maxShiftBy": 10
   },
   "client": [
+    "bettersurvival.ItemNunchaku_Mixin",
     "bettersurvival.ModClientHandler_Mixin"
   ]
 }

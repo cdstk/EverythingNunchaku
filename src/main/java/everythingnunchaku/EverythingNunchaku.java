@@ -1,6 +1,8 @@
 package everythingnunchaku;
 
 import everythingnunchaku.handlers.ForgeConfigProvider;
+import everythingnunchaku.handlers.ModRegistry;
+import everythingnunchaku.proxy.CommonProxy;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.Instance;
 import net.minecraftforge.fml.common.SidedProxy;
@@ -9,8 +11,6 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import everythingnunchaku.handlers.ModRegistry;
-import everythingnunchaku.proxy.CommonProxy;
 
 @Mod(modid = EverythingNunchaku.MODID, version = EverythingNunchaku.VERSION, name = EverythingNunchaku.NAME, dependencies = "required-after:fermiumbooter;required-after:mujmajnkraftsbettersurvival")
 public class EverythingNunchaku {
