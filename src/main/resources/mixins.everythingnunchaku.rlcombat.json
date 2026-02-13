@@ -13,6 +13,7 @@
     "maxShiftBy": 10
   },
   "client": [
-    "rlcombat.BetterSurvivalHandler_Mixin"
+    "rlcombat.BetterSurvivalHandler_Mixin",
+    "rlcombat.EventHandlersClient_Invoker"
   ]
 }

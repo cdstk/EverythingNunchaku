@@ -51,4 +51,16 @@ public abstract class ModClientHandler_Mixin {
         original.call(instance, player, entityHit);
         player.swingArm(EnumHand.MAIN_HAND);
     }
+
+    @Definition(id = "player", local = @Local(type = EntityPlayerSP.class))
+    @Expression("? != player")
+    @ModifyExpressionValue(
+            method = "onClientTick",
+            at = @At("MIXINEXTRAS:EXPRESSION"),
+            remap = false
+    )
+    private boolean everythingNunchaku_betterSurvivalModClientHandler_onClientTickShouldAttack(boolean original, @Local EntityPlayerSP player, @Local RayTraceResult mov){
+        if(player.getHeldItemMainhand().getItem() instanceof ItemNunchaku) return original;
+        else return original && ForgeConfigProvider.shouldAttack(mov.entityHit, player);
+    }
 }

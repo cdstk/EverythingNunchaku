@@ -9,19 +9,10 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
 @Config(modid = EverythingNunchaku.MODID)
 public class ForgeConfigHandler {
-	
-//	@Config.Comment("Server-Side Options")
-//	@Config.Name("Server Options")
-//	public static final ServerConfig server = new ServerConfig();
 
 	@Config.Comment("Client-Side Options")
 	@Config.Name("Client Options")
 	public static final ClientConfig client = new ClientConfig();
-
-//	@MixinConfig(name = EverythingNunchaku.MODID) //Needed on config classes that contain MixinToggles for those mixins to be added
-//	public static class ServerConfig {
-//
-//	}
 
 	public static class ClientConfig {
 
@@ -32,6 +23,10 @@ public class ForgeConfigHandler {
 		@Config.Comment("Automatically attack while using offhand weapon")
 		@Config.Name("RLCombat Offhand")
 		public boolean rlCombatOffhand = true;
+
+		@Config.Comment("Use RLCombat's offhand blacklist for targeting entities, forcing manual clicks to attack")
+		@Config.Name("RLCombat Entity Blacklist")
+		public boolean rlCombatEntityBlacklist = true;
 
 		@Config.Comment("Allows offhand nunchakus to be usable without a spinning mainhand one")
 		@Config.Name("RLCombat Offhand Nunchaku")
@@ -62,6 +57,15 @@ public class ForgeConfigHandler {
 		@Config.Name("Item ID Blacklist")
 		public String[] itemIDBlacklist = new String[]{
 
+		};
+
+		@Config.Comment("Blacklisted entity classes from handling, you will not be able to continuously attack any entity that extends these classes")
+		@Config.Name("Entity Class Blacklist")
+		public String[] entityBlacklist = new String[] {
+				"net.minecraft.entity.passive.EntityHorse",
+				"net.minecraft.entity.item.EntityArmorStand",
+				"net.minecraft.entity.passive.EntityVillager",
+				"net.minecraft.entity.item.EntityItemFrame"
 		};
 	}
 
