@@ -44,6 +44,7 @@ public class ForgeConfigHandler {
 				"com.mujmajnkraft.bettersurvival.items.ItemDagger",
 				"com.mujmajnkraft.bettersurvival.items.ItemHammer",
 				"com.mujmajnkraft.bettersurvival.items.ItemNunchaku",
+				"dev.satyrn.wolfarmor.item.ItemWolfArmor",
 				"com.lycanitesmobs.core.item.equipment.ItemEquipment"
 		};
 
