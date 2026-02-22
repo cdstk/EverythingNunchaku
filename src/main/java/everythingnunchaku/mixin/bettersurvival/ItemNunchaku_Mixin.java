@@ -1,9 +1,6 @@
 package everythingnunchaku.mixin.bettersurvival;
 
-import com.llamalad7.mixinextras.expression.Definition;
-import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
-import com.llamalad7.mixinextras.sugar.Local;
 import everythingnunchaku.EverythingNunchaku;
 import everythingnunchaku.handlers.ForgeConfigHandler;
 import net.minecraft.entity.EntityLivingBase;
@@ -17,19 +14,17 @@ import javax.annotation.Nullable;
 @Mixin(targets = "com.mujmajnkraft.bettersurvival.items.ItemNunchaku$1")
 public abstract class ItemNunchaku_Mixin {
 
-    @Definition(id = "stack", local = @Local(type = ItemStack.class, argsOnly = true))
-    @Expression("? == stack")
     @ModifyExpressionValue(
             method = "apply",
-            at = @At(value = "MIXINEXTRAS:EXPRESSION")
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/EntityLivingBase;getHeldItemMainhand()Lnet/minecraft/item/ItemStack;")
     )
-    private boolean everythingNunchaku_betterSurvivalItemNunchaku$1_applyOffhandSpin(boolean inMainhand, ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn){
+    private ItemStack everythingNunchaku_betterSurvivalItemNunchaku$1_applyOffhandSpin(ItemStack original, ItemStack stack, @Nullable World worldIn, @Nullable EntityLivingBase entityIn){
         if(ForgeConfigHandler.client.rlCombatOffhandNunchaku && entityIn == EverythingNunchaku.PROXY.getSinglePlayerEntity()){
-            if(inMainhand)
-                return EverythingNunchaku.PROXY.iskeyBindAttackKeyDown();
-            else if(entityIn.getHeldItemOffhand() == stack)
-                return EverythingNunchaku.PROXY.iskeyBindUseItemKeyDown();
+            if(entityIn.getHeldItemMainhand() == stack && EverythingNunchaku.PROXY.iskeyBindAttackKeyDown())
+                return stack;
+            else if(entityIn.getHeldItemOffhand() == stack && EverythingNunchaku.PROXY.iskeyBindUseItemKeyDown())
+                return stack;
         }
-        return inMainhand;
+        return original;
     }
 }

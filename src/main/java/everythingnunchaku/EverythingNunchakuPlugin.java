@@ -1,6 +1,5 @@
 package everythingnunchaku;
 
-import everythingnunchaku.compat.ModLoadedUtil;
 import fermiumbooter.FermiumRegistryAPI;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 import org.spongepowered.asm.launch.MixinBootstrap;
@@ -13,8 +12,8 @@ public class EverythingNunchakuPlugin implements IFMLLoadingPlugin {
 	public EverythingNunchakuPlugin() {
 		MixinBootstrap.init();
 
-		FermiumRegistryAPI.enqueueMixin(true, "mixins.everythingnunchaku.bettersurvival.json", () -> FermiumRegistryAPI.isModPresent("mujmajnkraftsbettersurvival"));
-		FermiumRegistryAPI.enqueueMixin(true, "mixins.everythingnunchaku.rlcombat.json", () -> FermiumRegistryAPI.isModPresent(ModLoadedUtil.RLCOMBAT_MODID));
+		FermiumRegistryAPI.enqueueMixin(true, "mixins.everythingnunchaku.bettersurvival.json");
+		FermiumRegistryAPI.enqueueMixin(true, "mixins.everythingnunchaku.rlcombat.json");
 	}
 
 	@Override

@@ -1,7 +1,5 @@
 package everythingnunchaku.mixin.bettersurvival;
 
-import com.llamalad7.mixinextras.expression.Definition;
-import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
@@ -13,23 +11,27 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.RayTraceResult;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(ModClientHandler.class)
 public abstract class ModClientHandler_Mixin {
 
-    @Definition(id = "ItemNunchaku", type = ItemNunchaku.class)
-    @Expression("? instanceof ItemNunchaku")
+    @Unique
+    private static final ItemNunchaku DUMMY_NUNCHAKU = new ItemNunchaku(Item.ToolMaterial.WOOD);
+
     @ModifyExpressionValue(
             method = "onClientTick",
-            at = @At("MIXINEXTRAS:EXPRESSION"),
+            at = @At(value = "INVOKE", target = "Lnet/minecraft/item/ItemStack;getItem()Lnet/minecraft/item/Item;", remap = true),
             remap = false
     )
-    private boolean everythingNunchaku_betterSurvivalModClientHandler_onClientTickAnyItem(boolean isNunchaku, @Local EntityPlayerSP player){
-        return isNunchaku || ForgeConfigProvider.isClientNunchaku(player.getHeldItemMainhand().getItem());
+    private Item everythingNunchaku_betterSurvivalModClientHandler_onClientTickAnyItem(Item original, @Local EntityPlayerSP player){
+        if(ForgeConfigProvider.isClientNunchaku(player.getHeldItemMainhand().getItem())) return DUMMY_NUNCHAKU;
+        return original;
     }
 
     @WrapOperation(
@@ -52,15 +54,14 @@ public abstract class ModClientHandler_Mixin {
         player.swingArm(EnumHand.MAIN_HAND);
     }
 
-    @Definition(id = "player", local = @Local(type = EntityPlayerSP.class))
-    @Expression("? != player")
     @ModifyExpressionValue(
             method = "onClientTick",
-            at = @At("MIXINEXTRAS:EXPRESSION"),
+            at = @At(value = "FIELD", target = "Lnet/minecraft/util/math/RayTraceResult;entityHit:Lnet/minecraft/entity/Entity;", ordinal = 1),
             remap = false
     )
-    private boolean everythingNunchaku_betterSurvivalModClientHandler_onClientTickShouldAttack(boolean original, @Local EntityPlayerSP player, @Local RayTraceResult mov){
-        if(player.getHeldItemMainhand().getItem() instanceof ItemNunchaku) return original;
-        else return original && ForgeConfigProvider.shouldAttack(mov.entityHit, player);
+    private Entity everythingNunchaku_betterSurvivalModClientHandler_onClientTickShouldAttack(Entity entityHit, @Local EntityPlayerSP player, @Local RayTraceResult mov){
+        if(player.getHeldItemMainhand().getItem() instanceof ItemNunchaku) return entityHit;
+        else if(!ForgeConfigProvider.shouldAttack(entityHit, player)) return player;
+        return entityHit;
     }
 }
