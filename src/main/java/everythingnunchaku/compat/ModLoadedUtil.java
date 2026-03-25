@@ -1,15 +1,15 @@
 package everythingnunchaku.compat;
 
-import net.minecraftforge.fml.common.Loader;
+import net.minecraftforge.fml.ModList;
 
 public abstract class ModLoadedUtil {
 
-    public static final String RLCOMBAT_MODID = "bettercombatmod";
+    public static final String OFFHAND_COMBAT_MODID = "offhandcombat";
 
-    private static Boolean rlCombatLoaded = null;
+    private static Boolean offhandCombatLoaded = null;
 
-    public static boolean getRlCombatLoaded() {
-        if(rlCombatLoaded == null) rlCombatLoaded = Loader.isModLoaded(RLCOMBAT_MODID);
-        return rlCombatLoaded;
+    public static boolean getOffhandCombatLoaded() {
+        if(offhandCombatLoaded == null) offhandCombatLoaded = ModList.get().isLoaded(OFFHAND_COMBAT_MODID);
+        return offhandCombatLoaded;
     }
 }

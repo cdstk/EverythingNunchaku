@@ -1,20 +1,15 @@
 package everythingnunchaku.handlers;
 
-import bettercombat.mod.util.Helpers;
 import everythingnunchaku.EverythingNunchaku;
-import everythingnunchaku.compat.ModLoadedUtil;
-import everythingnunchaku.mixin.rlcombat.EventHandlersClient_Invoker;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.IEntityOwnable;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.entity.passive.TameableEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.Item;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.logging.log4j.Level;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -31,27 +26,22 @@ public class ForgeConfigProvider {
         ForgeConfigProvider.initClientNunchakus();
     }
 
-    public static boolean shouldAttack(Entity entHit, EntityPlayer player) {
-        if(ForgeConfigHandler.client.rlCombatEntityBlacklist && ModLoadedUtil.getRlCombatLoaded()) {
-            if(!EventHandlersClient_Invoker.invokeShouldAttack(entHit, player)) return false;
+    public static boolean shouldAttack(Entity entHit, PlayerEntity player) {
+        if(entHit == null) return false;
+
+        if(entHit instanceof ServerPlayerEntity && entHit.getServer() != null) {
+            return entHit.getServer().isPvpAllowed();
         }
-        else {
-            if(entHit == null) return false;
 
-            if(entHit instanceof EntityPlayerMP) {
-                return Helpers.execNullable(entHit.getServer(), MinecraftServer::isPVPEnabled, false);
-            }
-
-            if(entHit instanceof IEntityOwnable && ((IEntityOwnable)entHit).getOwner() == player) {
-                return false;
-            }
+        if(entHit instanceof TameableEntity && ((TameableEntity)entHit).getOwner() == player) {
+            return false;
         }
 
         return ForgeConfigProvider.isEntityNunchakable(entHit);
     }
 
     public static boolean isClientNunchaku(Item item){
-        if(ForgeConfigHandler.client.allowEverything) return true;
+        if(EverythingNunchakuConfig.Holder.CLIENT.allowEverything.get()) return true;
         if(invalidNunchakuItems.contains(item.getRegistryName())) return false;
         if(validNunchakuItems.contains(item.getRegistryName())) return true;
         for(Class<?> clazz : validNunchakuClasses) {
@@ -72,7 +62,7 @@ public class ForgeConfigProvider {
         ForgeConfigProvider.validNunchakuItems.clear();
         ForgeConfigProvider.invalidNunchakuItems.clear();
         ForgeConfigProvider.invalidTargetClasses.clear();
-        ForgeConfigProvider.validNunchakuClasses.addAll(Arrays.stream(ForgeConfigHandler.client.itemClassWhitelist)
+        ForgeConfigProvider.validNunchakuClasses.addAll(EverythingNunchakuConfig.Holder.CLIENT.itemClassWhitelist.get().stream()
                 .map(line -> {
                     try {
                         return Class.forName(line.trim());
@@ -83,7 +73,7 @@ public class ForgeConfigProvider {
                 })
                 .filter(Objects::nonNull)
                 .collect(Collectors.toSet()));
-        ForgeConfigProvider.validNunchakuItems.addAll(Arrays.stream(ForgeConfigHandler.client.itemIDWhitelist)
+        ForgeConfigProvider.validNunchakuItems.addAll(EverythingNunchakuConfig.Holder.CLIENT.itemIDWhitelist.get().stream()
                 .map(ResourceLocation::new)
                 .filter(resourceLocation -> {
                     if(ForgeRegistries.ITEMS.getValue(resourceLocation) == null){
@@ -93,7 +83,7 @@ public class ForgeConfigProvider {
                     return true;
                 })
                 .collect(Collectors.toSet()));
-        ForgeConfigProvider.invalidNunchakuItems.addAll(Arrays.stream(ForgeConfigHandler.client.itemIDBlacklist)
+        ForgeConfigProvider.invalidNunchakuItems.addAll(EverythingNunchakuConfig.Holder.CLIENT.itemIDBlacklist.get().stream()
                 .map(ResourceLocation::new)
                 .filter(resourceLocation -> {
                     if(ForgeRegistries.ITEMS.getValue(resourceLocation) == null){
@@ -103,7 +93,7 @@ public class ForgeConfigProvider {
                     return true;
                 })
                 .collect(Collectors.toSet()));
-        ForgeConfigProvider.invalidTargetClasses.addAll(Arrays.stream(ForgeConfigHandler.client.entityBlacklist)
+        ForgeConfigProvider.invalidTargetClasses.addAll(EverythingNunchakuConfig.Holder.CLIENT.entityBlacklist.get().stream()
                 .map(line -> {
                     try {
                         return Class.forName(line.trim());
