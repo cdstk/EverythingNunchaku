@@ -15,7 +15,7 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void init(){
-        if(ModLoadedUtil.getRlCombatLoaded()) MinecraftForge.EVENT_BUS.register(RLCombatHandler.class);
+        if(ModLoadedUtil.versionInRange(ModLoadedUtil.rlCombat, ModLoadedUtil.RLCOMBAT_VERSION)) MinecraftForge.EVENT_BUS.register(RLCombatHandler.class);
     }
 
     @Override

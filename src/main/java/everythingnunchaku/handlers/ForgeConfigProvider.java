@@ -32,7 +32,7 @@ public class ForgeConfigProvider {
     }
 
     public static boolean shouldAttack(Entity entHit, EntityPlayer player) {
-        if(ForgeConfigHandler.client.rlCombatEntityBlacklist && ModLoadedUtil.getRlCombatLoaded()) {
+        if(ForgeConfigHandler.client.rlCombatEntityBlacklist && ModLoadedUtil.versionInRange(ModLoadedUtil.rlCombat, ModLoadedUtil.RLCOMBAT_VERSION)) {
             if(!EventHandlersClient_Invoker.invokeShouldAttack(entHit, player)) return false;
         }
         else {
