@@ -1,9 +1,10 @@
 package everythingnunchaku;
 
-import everythingnunchaku.compat.ModLoadedUtil;
 import fermiumbooter.FermiumRegistryAPI;
+import net.minecraftforge.fml.relauncher.CoreModManager;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
-import org.spongepowered.asm.launch.MixinBootstrap;
+import org.apache.commons.lang3.StringUtils;
+import org.spongepowered.asm.mixin.MixinEnvironment;
 
 import java.util.Map;
 
@@ -11,10 +12,7 @@ import java.util.Map;
 public class EverythingNunchakuPlugin implements IFMLLoadingPlugin {
 
 	public EverythingNunchakuPlugin() {
-		MixinBootstrap.init();
-
 		FermiumRegistryAPI.enqueueMixin(true, "mixins.everythingnunchaku.bettersurvival.json", () -> FermiumRegistryAPI.isModPresent("mujmajnkraftsbettersurvival"));
-		FermiumRegistryAPI.enqueueMixin(true, "mixins.everythingnunchaku.rlcombat.json", () -> FermiumRegistryAPI.isModPresent(ModLoadedUtil.RLCOMBAT_MODID));
 	}
 
 	@Override
@@ -34,9 +32,14 @@ public class EverythingNunchakuPlugin implements IFMLLoadingPlugin {
 	{
 		return null;
 	}
-	
+
 	@Override
-	public void injectData(Map<String, Object> data) { }
+	public void injectData(Map<String, Object> data) {
+		if (Boolean.FALSE.equals(data.get("runtimeDeobfuscationEnabled"))) {
+			MixinEnvironment.getDefaultEnvironment().setObfuscationContext("searge");
+			CoreModManager.getReparseableCoremods().removeIf(s -> StringUtils.containsIgnoreCase(s, "fermiumbooter"));
+		}
+	}
 	
 	@Override
 	public String getAccessTransformerClass()

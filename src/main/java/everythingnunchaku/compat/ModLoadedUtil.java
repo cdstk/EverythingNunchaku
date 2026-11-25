@@ -8,6 +8,7 @@ public abstract class ModLoadedUtil {
 
     public static final String RLCOMBAT_MODID = "bettercombatmod";
     public static final String RLCOMBAT_VERSION = "[2.2.0,)";
+    public static final String OLD_RLCOMBAT_VERSION = "[,2.2.0)";
 
     public static LoadedContainer rlCombat = new LoadedContainer(RLCOMBAT_MODID);
 

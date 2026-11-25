@@ -2,6 +2,7 @@ package everythingnunchaku.proxy;
 
 import everythingnunchaku.compat.ModLoadedUtil;
 import everythingnunchaku.compat.client.RLCombatHandler;
+import everythingnunchaku.compat.client.RLCombatOldHandler;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.common.MinecraftForge;
@@ -15,7 +16,14 @@ public class ClientProxy extends CommonProxy {
 
     @Override
     public void init(){
-        if(ModLoadedUtil.versionInRange(ModLoadedUtil.rlCombat, ModLoadedUtil.RLCOMBAT_VERSION)) MinecraftForge.EVENT_BUS.register(RLCombatHandler.class);
+        if(ModLoadedUtil.rlCombat.isLoaded()) {
+            if(ModLoadedUtil.versionInRange(ModLoadedUtil.rlCombat, ModLoadedUtil.RLCOMBAT_VERSION)) {
+                MinecraftForge.EVENT_BUS.register(RLCombatHandler.class);
+            }
+            else {
+                MinecraftForge.EVENT_BUS.register(RLCombatOldHandler.class);
+            }
+        }
     }
 
     @Override

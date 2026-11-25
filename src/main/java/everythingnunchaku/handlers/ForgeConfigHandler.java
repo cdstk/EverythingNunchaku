@@ -1,6 +1,8 @@
 package everythingnunchaku.handlers;
 
 import everythingnunchaku.EverythingNunchaku;
+import everythingnunchaku.compat.ModLoadedUtil;
+import fermiumbooter.annotations.MixinConfig;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
@@ -13,6 +15,37 @@ public class ForgeConfigHandler {
 	@Config.Comment("Client-Side Options")
 	@Config.Name("Client Options")
 	public static final ClientConfig client = new ClientConfig();
+
+	@Config.Name("Mixin Toggles")
+	public static final MixinToggleConfig mixin = new MixinToggleConfig();
+
+	@MixinConfig(name = EverythingNunchaku.MODID)
+	public static class MixinToggleConfig {
+
+		@Config.Comment("Toggles Compatibility for proper attack packets. For RLCombat versions 2.2.0 and beyond.")
+		@Config.Name("Mixin Toggle: RLCombat Modern")
+		@Config.RequiresMcRestart
+		@MixinConfig.MixinToggle(defaultValue = true, lateMixin = "mixins.everythingnunchaku.rlcombat.json")
+		@MixinConfig.CompatHandling(
+				modid = ModLoadedUtil.RLCOMBAT_MODID,
+				targetVersionRange = ModLoadedUtil.RLCOMBAT_VERSION,
+				desired = true,
+				warnIngame = false,
+				reason = "Requires version " + ModLoadedUtil.RLCOMBAT_VERSION + " to properly function")
+		public boolean mixinRLCombatModern = true;
+
+		@Config.Comment("Toggles Compatibility for proper attack packets. For RLCombat versions before 2.2.0")
+		@Config.Name("Mixin Toggle: RLCombat Old")
+		@Config.RequiresMcRestart
+		@MixinConfig.MixinToggle(defaultValue = true, lateMixin = "mixins.everythingnunchaku.rlcombat.old.json")
+		@MixinConfig.CompatHandling(
+				modid = ModLoadedUtil.RLCOMBAT_MODID,
+				targetVersionRange = ModLoadedUtil.OLD_RLCOMBAT_VERSION,
+				desired = true,
+				warnIngame = false,
+				reason = "Requires versions before 2.2.0 to properly function")
+		public boolean mixinRLCombatOld = true;
+	}
 
 	public static class ClientConfig {
 

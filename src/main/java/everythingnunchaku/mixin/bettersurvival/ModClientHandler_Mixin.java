@@ -1,5 +1,7 @@
 package everythingnunchaku.mixin.bettersurvival;
 
+import bettercombat.mod.util.ConfigurationHandler;
+import bettercombat.mod.util.ReachFixUtil;
 import com.llamalad7.mixinextras.expression.Definition;
 import com.llamalad7.mixinextras.expression.Expression;
 import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
@@ -8,7 +10,10 @@ import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.llamalad7.mixinextras.sugar.Local;
 import com.mujmajnkraft.bettersurvival.client.ModClientHandler;
 import com.mujmajnkraft.bettersurvival.items.ItemNunchaku;
+import everythingnunchaku.compat.ModLoadedUtil;
+import everythingnunchaku.compat.client.RLCombatHandler;
 import everythingnunchaku.handlers.ForgeConfigProvider;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.multiplayer.PlayerControllerMP;
 import net.minecraft.entity.Entity;
@@ -32,6 +37,20 @@ public abstract class ModClientHandler_Mixin {
         return isNunchaku || ForgeConfigProvider.isClientNunchaku(player.getHeldItemMainhand().getItem());
     }
 
+    @ModifyExpressionValue(
+            method = "onClientTick",
+            at = @At(value = "INVOKE", target = "Lmeldexun/reachfix/hook/client/EntityRendererHook;pointedObject(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;Lnet/minecraft/world/World;F)Lnet/minecraft/util/math/RayTraceResult;"),
+            remap = false
+    )
+    private RayTraceResult everythingNunchaku_betterSurvivalModClientHandler_onClientTickSwingThroughPassable(RayTraceResult mov, @Local Minecraft mc, @Local Entity rvEntity, @Local EntityPlayerSP player ){
+        // Current a client config
+        if(ConfigurationHandler.server.swingThroughPassableBlocks) {
+            RayTraceResult mov1 = ReachFixUtil.pointedObjectIgnorePassable(rvEntity, player, EnumHand.MAIN_HAND, mc.world, mc.getRenderPartialTicks());
+            if(mov1 != null && mov1.entityHit != null && mov1.entityHit != player) mov = mov1;
+        }
+        return mov;
+    }
+
     @WrapOperation(
             method = "onClientTick",
             at = @At(value = "INVOKE", target = "Lcom/mujmajnkraft/bettersurvival/integration/RLCombatCompat;attackEntityFromClient(Lnet/minecraft/util/math/RayTraceResult;Lnet/minecraft/entity/player/EntityPlayer;)V"),
@@ -40,6 +59,9 @@ public abstract class ModClientHandler_Mixin {
     private void everythingNunchaku_betterSurvivalModClientHandler_onClientTickSwingRLCombat(RayTraceResult mov, EntityPlayer player, Operation<Void> original){
         original.call(mov, player);
         player.swingArm(EnumHand.MAIN_HAND);
+        if(ModLoadedUtil.rlCombat.isLoaded() && ModLoadedUtil.versionInRange(ModLoadedUtil.rlCombat, ModLoadedUtil.RLCOMBAT_VERSION)) {
+            RLCombatHandler.initiateMainhandAnimation(player);
+        }
     }
 
     @WrapOperation(

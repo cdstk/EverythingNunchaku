@@ -2,7 +2,6 @@ package everythingnunchaku.mixin.rlcombat;
 
 import bettercombat.mod.client.handler.EventHandlersClient;
 import com.llamalad7.mixinextras.sugar.Local;
-import everythingnunchaku.compat.ModLoadedUtil;
 import everythingnunchaku.handlers.ForgeConfigProvider;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraftforge.client.event.MouseEvent;
@@ -21,6 +20,6 @@ public abstract class EventHandlersClient_OldRLCombatMixin {
             cancellable = true
     )
     private static void everythingNunchaku_rlCombatEventHandlersClient_onMouseLeftClickOldRLCombat(MouseEvent event, CallbackInfo ci, @Local EntityPlayer player){
-        if(!ModLoadedUtil.versionInRange(ModLoadedUtil.rlCombat, ModLoadedUtil.RLCOMBAT_VERSION) && ForgeConfigProvider.isClientNunchaku(player.getHeldItemMainhand().getItem())) ci.cancel();
+        if(ForgeConfigProvider.isClientNunchaku(player.getHeldItemMainhand().getItem())) ci.cancel();
     }
 }

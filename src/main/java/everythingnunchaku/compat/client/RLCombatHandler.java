@@ -16,6 +16,7 @@ import everythingnunchaku.handlers.ForgeConfigProvider;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemShield;
 import net.minecraft.util.EnumHand;
@@ -82,5 +83,10 @@ public abstract class RLCombatHandler {
     // Must match RLCombat config also
     public static boolean isClientNunchakuOffhand(Item item){
         return ConfigurationHandler.isItemAttackUsableOffhand(item) && ForgeConfigProvider.isClientNunchaku(item);
+    }
+
+    public static void initiateMainhandAnimation(EntityPlayer player){
+        EventHandlersClient.resetMainhandAnimationCooldown(player.getCooldownPeriod());
+        EventHandlersClient.betterCombatMainhand.initiateAnimation();
     }
 }

@@ -16,7 +16,7 @@ import org.apache.logging.log4j.Logger;
         version = EverythingNunchaku.VERSION,
         name = EverythingNunchaku.NAME,
         dependencies =
-                "required-after:fermiumbooter@[1.3.2,);" +
+                "required-after:fermiumbooter@[1.5.2,);" +
                 "required-after:mujmajnkraftsbettersurvival",
         clientSideOnly = true
 )
