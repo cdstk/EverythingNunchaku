@@ -85,6 +85,14 @@ public abstract class RLCombatHandler {
         return ConfigurationHandler.isItemAttackUsableOffhand(item) && ForgeConfigProvider.isClientNunchaku(item);
     }
 
+    public static RayTraceResult getSwingThroughPassableTarget(Minecraft mc, Entity rvEntity, EntityPlayerSP player) {
+        // Currently a client config
+        if(ConfigurationHandler.server.swingThroughPassableBlocks)
+             return ReachFixUtil.pointedObjectIgnorePassable(rvEntity, player, EnumHand.MAIN_HAND, mc.world, mc.getRenderPartialTicks());
+        else
+            return null;
+    }
+
     public static void initiateMainhandAnimation(EntityPlayer player){
         EventHandlersClient.resetMainhandAnimationCooldown(player.getCooldownPeriod());
         EventHandlersClient.betterCombatMainhand.initiateAnimation();

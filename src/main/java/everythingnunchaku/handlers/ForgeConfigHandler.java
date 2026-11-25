@@ -22,8 +22,17 @@ public class ForgeConfigHandler {
 	@MixinConfig(name = EverythingNunchaku.MODID)
 	public static class MixinToggleConfig {
 
+		@Config.Comment({
+				"Similar to RLCombat Offhand, don't trigger an attack cooldown reset when clicking a block.",
+				"Instant break and block harvesting items will still break blocks and reset attack cooldowns."
+		})
+		@Config.Name("Cancel Whiffed Block Clicks (Vanilla)")
+		@Config.RequiresMcRestart
+		@MixinConfig.MixinToggle(defaultValue = true, earlyMixin = "mixins.everythingnunchaku.vanilla.json")
+		public boolean vanillaNoBlockClick = true;
+
 		@Config.Comment("Toggles Compatibility for proper attack packets. For RLCombat versions 2.2.0 and beyond.")
-		@Config.Name("Mixin Toggle: RLCombat Modern")
+		@Config.Name("RLCombat Modern (RLCombat)")
 		@Config.RequiresMcRestart
 		@MixinConfig.MixinToggle(defaultValue = true, lateMixin = "mixins.everythingnunchaku.rlcombat.json")
 		@MixinConfig.CompatHandling(
@@ -32,10 +41,10 @@ public class ForgeConfigHandler {
 				desired = true,
 				warnIngame = false,
 				reason = "Requires version " + ModLoadedUtil.RLCOMBAT_VERSION + " to properly function")
-		public boolean mixinRLCombatModern = true;
+		public boolean rlCombatModern = true;
 
 		@Config.Comment("Toggles Compatibility for proper attack packets. For RLCombat versions before 2.2.0")
-		@Config.Name("Mixin Toggle: RLCombat Old")
+		@Config.Name("RLCombat Old (RLCombat)")
 		@Config.RequiresMcRestart
 		@MixinConfig.MixinToggle(defaultValue = true, lateMixin = "mixins.everythingnunchaku.rlcombat.old.json")
 		@MixinConfig.CompatHandling(
@@ -44,7 +53,7 @@ public class ForgeConfigHandler {
 				desired = true,
 				warnIngame = false,
 				reason = "Requires versions before 2.2.0 to properly function")
-		public boolean mixinRLCombatOld = true;
+		public boolean rlCombatOld = true;
 	}
 
 	public static class ClientConfig {

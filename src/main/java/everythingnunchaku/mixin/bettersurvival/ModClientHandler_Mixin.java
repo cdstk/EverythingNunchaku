@@ -42,10 +42,9 @@ public abstract class ModClientHandler_Mixin {
             at = @At(value = "INVOKE", target = "Lmeldexun/reachfix/hook/client/EntityRendererHook;pointedObject(Lnet/minecraft/entity/Entity;Lnet/minecraft/entity/player/EntityPlayer;Lnet/minecraft/util/EnumHand;Lnet/minecraft/world/World;F)Lnet/minecraft/util/math/RayTraceResult;"),
             remap = false
     )
-    private RayTraceResult everythingNunchaku_betterSurvivalModClientHandler_onClientTickSwingThroughPassable(RayTraceResult mov, @Local Minecraft mc, @Local Entity rvEntity, @Local EntityPlayerSP player ){
-        // Current a client config
-        if(ConfigurationHandler.server.swingThroughPassableBlocks) {
-            RayTraceResult mov1 = ReachFixUtil.pointedObjectIgnorePassable(rvEntity, player, EnumHand.MAIN_HAND, mc.world, mc.getRenderPartialTicks());
+    private RayTraceResult everythingNunchaku_betterSurvivalModClientHandler_onClientTickSwingThroughPassable(RayTraceResult mov, @Local Minecraft mc, @Local Entity rvEntity, @Local EntityPlayerSP player){
+        if(ModLoadedUtil.rlCombat.isLoaded() && ModLoadedUtil.versionInRange(ModLoadedUtil.rlCombat, ModLoadedUtil.RLCOMBAT_VERSION)) {
+            RayTraceResult mov1 = RLCombatHandler.getSwingThroughPassableTarget(mc, rvEntity, player);
             if(mov1 != null && mov1.entityHit != null && mov1.entityHit != player) mov = mov1;
         }
         return mov;
